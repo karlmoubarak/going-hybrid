@@ -1,0 +1,14 @@
+beautifulsoup4==4.11.1
+bs4==0.0.1
+certifi==2022.5.18.1
+charset-normalizer==2.0.12
+dataknead==0.4.0
+et-xmlfile==1.1.0
+idna==3.3
+lxml==4.9.0
+openpyxl==3.0.10
+requests==2.28.0
+soupsieve==2.3.2.post1
+toml==0.10.2
+urllib3==1.26.9
+xmltodict==0.12.0

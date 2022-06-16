@@ -64,7 +64,6 @@ def get_data():
             lang : item
         })
 
-    print(Knead(items))
     return items
 
 def get_index(html):
@@ -77,7 +76,7 @@ def get_text(el):
         return None
 
     text = el.get_text()
-    text = text.replace("\n", "💩 ")
+    text = text.replace("\n", " ")
     text = text.replace("\t", " ")
     text = text.replace("\u00a0", " ")
     text = re.sub(u"(\u2018|\u2019)", "'", text)
@@ -170,6 +169,26 @@ def scrape_index(html):
         link = item["href"]
         fetch_article(link)
 
+def write_csv(items):
+    # Flatten our data
+    lang = "en"
+
+    for item in items:
+        data = item[lang]
+
+        # Flatten images
+        if "page_images" in data and len(data["page_images"]):
+            data["page_images"] = [ i.get("src") for i in data["page_images"] ]
+            data["page_images"] = ",".join(data["page_images"])
+
+        for key, value in data.items():
+            item[f"{lang}_{key}"] = value
+
+        item.pop(lang)
+
+    Knead(items).write("exhibitions.csv")
+
 if __name__ == "__main__":
     exhibitions = get_data()
-    Knead(exhibitions).write("exhibitions.csv")
+    Knead(exhibitions).write("exhibitions.json")
+    write_csv(exhibitions)

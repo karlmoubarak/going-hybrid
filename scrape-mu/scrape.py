@@ -10,12 +10,8 @@ URL = "https://mu.nl/nl/exhibitions/archive"
 
 def fetch_article(link):
     print(f"Fetching <{link}>")
-
-    # Create an unique ID we can use as a base for saving the data
-    root = link.split("/")[-1]
-
-    # Fetch English version
-    path = Path("data") / f"{root}-en.html"
+    slug = get_slug(link)
+    path = slug["path_en"]
 
     # Check if this already exists
     if path.exists():
@@ -29,6 +25,47 @@ def fetch_article(link):
 
     print(f"Written site to <{path}>")
 
+def get_slug(link):
+    # Create an unique ID we can use as a base for saving the data
+    slug = link.split("/")[-1]
+
+    # Fetch English version
+    path_en = Path("data") / f"{slug}-en.html"
+    path_nl = Path("data") / f"{slug}-nl.html"
+
+    return {
+        "path_en" : path_en,
+        "path_nl" : path_nl,
+        "slug" : slug
+    }
+
+def get_data():
+    lang = "en"
+
+    with open(f"index-{lang}.html") as f:
+        index_items = get_index(f.read())
+
+    items = []
+
+    for index, item in enumerate(index_items):
+        slug = get_slug(item["href"])
+        path = slug[f"path_{lang}"]
+
+        with open(path) as f:
+            print(f"Parsing {path}")
+            article = parse_article(f.read())
+
+        item.update(article)
+
+        items.append({
+            "index" : index,
+            "slug" : slug["slug"],
+            lang : item
+        })
+
+    print(Knead(items))
+    return items
+
 def get_index(html):
     soup = BeautifulSoup(html, "lxml")
     articles = soup.select(".articles article")
@@ -39,7 +76,7 @@ def get_text(el):
         return None
 
     text = el.get_text()
-    text = text.replace("\n", ". ")
+    text = text.replace("\n", "💩 ")
     text = text.replace("\t", " ")
     text = text.replace("\u00a0", " ")
     text = re.sub(u"(\u2018|\u2019)", "'", text)
@@ -72,7 +109,7 @@ def parse_article(html):
     images = item.select(".image-slider img")
 
     if images:
-        images = [ {"src" : i.get("src", None), "alt" : i.get("alt", None)} for i in images]
+        images = [ {"src" : ROOT + i.get("src", ""), "alt" : i.get("alt", None)} for i in images]
     else:
         images = []
 
@@ -80,44 +117,18 @@ def parse_article(html):
     link_en = soup.select_one('.navigation-languages a[hreflang="en"]').get("href")
 
     return {
-        "_status" : "ok",
-        "images" : images,
-        "link_en" : link_en,
-        "link_nl" : link_nl,
+        "_page_status" : "ok",
+        "page_images" : images,
+        "link_en" : f"{ROOT}{link_en}",
+        "link_nl" : f"{ROOT}{link_nl}",
         "on_show" : on_show,
         "opening" : opening,
-        "subtitle" : get_text(item.select_one("h2")),
-        "text" : get_text(soup.select_one(".item > .text")),
-        "title" : get_text(item.select_one("h1"))
+        "page_subtitle" : get_text(item.select_one("h2")),
+        "page_text" : get_text(soup.select_one(".item > .text")),
+        "page_title" : get_text(item.select_one("h1"))
     }
 
-def parse_link(link):
-    img = link.select_one("img").get("src", None)
-
-    if img:
-        img = f"{ROOT}{img}"
-
-    href = link.select_one("a").get("href", None)
-
-    if href:
-        href = f"{ROOT}{href}"
-
-    return {
-        "date" : get_text(link.select_one("time")),
-        "href" : href,
-        "img" : img,
-        "text" : get_text(link.select_one("p")),
-        "title" : get_text(link.select_one("h3"))
-    }
-
-def scrape_index(html):
-    index = get_index(html)
-
-    for item in index:
-        link = item["href"]
-        fetch_article(link)
-
-if __name__ == "__main__":
+def parse_articles():
     articles = []
 
     for article in Path("data").glob("*.html"):
@@ -132,8 +143,32 @@ if __name__ == "__main__":
     # Convert to a CSV but remove the images because that is nested
     Knead(articles).write("exhibitions.csv")
 
-    # with open(Path("data") / "spiraling-into-infinity-en.html") as f:
-    #     article = parse_article(f.read())
-    #     print(Knead(article))
-    # with open("index-en.html") as f:
-    #     index = scrape_index(f.read())
+def parse_link(link):
+    img = link.select_one("img").get("src", None)
+
+    if img:
+        img = f"{ROOT}{img}"
+
+    href = link.select_one("a").get("href", None)
+
+    if href:
+        href = f"{ROOT}{href}"
+
+    return {
+        "index_date" : get_text(link.select_one("time")),
+        "href" : href,
+        "index_img" : img,
+        "index_text" : get_text(link.select_one("p")),
+        "index_title" : get_text(link.select_one("h3"))
+    }
+
+def scrape_index(html):
+    index = get_index(html)
+
+    for item in index:
+        link = item["href"]
+        fetch_article(link)
+
+if __name__ == "__main__":
+    exhibitions = get_data()
+    Knead(exhibitions).write("exhibitions.csv")

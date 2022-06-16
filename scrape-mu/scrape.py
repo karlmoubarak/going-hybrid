@@ -57,6 +57,8 @@ def get_data():
 
         item.update(article)
 
+        print(item["page_title"], item["index_title"])
+
         items.append({
             "index" : index,
             "slug" : slug["slug"],

@@ -4,6 +4,7 @@ from dataknead import Knead
 from pathlib import Path
 import re
 import requests
+import sys
 
 ROOT = "https://mu.nl"
 URL = "https://mu.nl/nl/exhibitions/archive"
@@ -56,8 +57,6 @@ def get_data():
             article = parse_article(f.read())
 
         item.update(article)
-
-        print(item["page_title"], item["index_title"])
 
         items.append({
             "index" : index,

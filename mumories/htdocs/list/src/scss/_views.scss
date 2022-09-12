@@ -1,0 +1,15 @@
+.views {
+    display: flex;
+    gap: 1rem;
+
+    &__button {
+        background: white;
+        padding: .5rem 1rem;
+        border: 1px solid black;
+        border-radius: 3px;
+    }
+
+    &__button[is-selected] {
+        background: #ccf;
+    }
+}

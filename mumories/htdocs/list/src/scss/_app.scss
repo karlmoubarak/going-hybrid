@@ -1,0 +1,25 @@
+.app {
+    padding: 2rem;
+    max-width: 80rem;
+    width: 100%;
+    @include child-margins(2rem);
+    @include margin-center;
+
+    h2 {
+        margin-top: 0;
+    }
+
+    .metadata {
+        margin-left: 2rem;
+    }
+
+    .metadata li {
+        display: list-item;
+        margin-bottom: 0;
+        list-style: disc;
+    }
+
+    .image {
+        width: 100%;
+    }
+}

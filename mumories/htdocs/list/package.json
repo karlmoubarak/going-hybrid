@@ -1,0 +1,25 @@
+{
+  "name": "confess",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "vite build --base='/list/'",
+    "dev": "vite",
+    "preview": "vite preview --port 5050"
+  },
+  "dependencies": {
+    "core-js": "^3.25.1",
+    "donot": "^0.4.1",
+    "lodash-es": "^4.17.21",
+    "pinia": "^2.0.22",
+    "regenerator-runtime": "^0.13.9",
+    "valenski": "^1.5.0",
+    "vue": "^3.2.39"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.1.0",
+    "sass": "^1.54.9",
+    "vite": "^3.1.0",
+    "vite-plugin-remove-console": "^1.1.0"
+  }
+}

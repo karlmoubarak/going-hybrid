@@ -1,0 +1,11 @@
+.el-tight {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    li {
+        background: #eee;
+        padding: 3px;
+    }
+}

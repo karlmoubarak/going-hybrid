@@ -1,0 +1,51 @@
+server {
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+
+    root /var/www/mumories.hackersanddesigners.nl/htdocs;
+    index index.php index.html index.htm;
+    server_name mumories.hackersanddesigners.nl; # managed by Certbot
+
+    error_log  /var/www/mumories.hackersanddesigners.nl/logs/error.log;
+    access_log /var/www/mumories.hackersanddesigners.nl/logs/access.log;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    ssl_certificate /etc/letsencrypt/live/mumories.hackersanddesigners.nl/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/mumories.hackersanddesigners.nl/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+    # Avoids filling up the error logs with commonly requested files.
+    # Note that if you have a custom 404 page, the request may be logged anyway.
+    location = /robots.txt { log_not_found off; }
+    location = /favicon.ico { log_not_found off; }
+    location = /apple-touch-icon.png { log_not_found off; }
+    location = /apple-touch-icon-precomposed.png { log_not_found off; }
+
+    # Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
+    # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+    location ~ /\. {
+        deny all;
+    }
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+    }  
+}
+
+server {
+    if ($host = mumories.hackersanddesigners.nl) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80 ;
+    listen [::]:80 ;
+    server_name mumories.hackersanddesigners.nl;
+    return 404; # managed by Certbot
+}

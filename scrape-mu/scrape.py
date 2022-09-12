@@ -190,5 +190,5 @@ def write_csv(items):
 
 if __name__ == "__main__":
     exhibitions = get_data()
-    Knead(exhibitions).write("exhibitions.json")
+    Knead(exhibitions).write("exhibitions.json", indent = 4)
     write_csv(exhibitions)

@@ -1,20 +1,44 @@
 <?php
 use GuzzleHttp\Client;
+use League\Csv\Reader;
 
 class Projects {
     function __construct() {
 
     }
 
-    public function getAll() {
-        $data = $this->getDriveData();
-        return $data;
+    public function getAllAsArray():array {
+        $csv = $this->getDriveCsvData();
+        return $this->csvAsJson($csv);
     }
 
-    private function getDriveData() {
+    public function getAllAsCsv():string {
+        return $this->getDriveCsvData();
+    }
+
+    private function csvAsJson(string $csv):array {
+        // Use the League CSV reader and export to JSON
+        $reader = Reader::createFromString($csv);
+        $reader->setHeaderOffset(0);
+        $reader->getHeader();
+
+        // Probably could be simpler than this
+        $records = [];
+
+        foreach ($reader->getRecords() as $record) {
+            $records[] = $record;
+        }
+
+        return $records;
+    }
+
+    private function getDriveCsvData() {
         $drive = Config::DRIVE_ENDPOINT;
         $gid = Config::GID_ID;
         $url = "$drive/export?format=csv&gid=$gid";
+
+        error_log("Getting $url");
+
         $client = new Client();
         $req = $client->get($url);
 
@@ -22,6 +46,8 @@ class Projects {
             throw new Exception("Something went wrong");
         }
 
-        return $req->getBody();
+        $body = (string) $req->getBody();
+
+        return $body;
     }
 }

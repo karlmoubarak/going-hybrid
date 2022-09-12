@@ -10,9 +10,14 @@
     }
 
     function json_response(array $res) {
+        header("Content-Type: application/json");
+        response(json_encode($res));
+    }
+
+    function response(string $res) {
         // Enable CORS
         header('Access-Control-Allow-Origin: *');
-        echo json_encode($res);
+        echo $res;
         die();
     }
 
@@ -24,14 +29,21 @@
 
     if ($action == "get-projects") {
         $projects = new Projects();
+        $format = isset($_GET["format"]) ? $_GET["format"] : "json";
 
         try {
-            $items = $projects->getAll();
+            if ($format == "csv") {
+                response( $projects->getAllAsCsv() );
+            } else if ($format == "json") {
+                json_response( $projects->getAllAsArray() );
+            } else {
+                error("Invalid format");
+            }
         } catch (Throwable $e) {
             error($e->getMessage());
         }
 
-        json_response($items);
+        json_response(["items" => $items]);
     } else {
         error("Invalid action");
     }

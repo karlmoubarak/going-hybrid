@@ -1,0 +1,2 @@
+#!/bin/bash
+rsync -avz ../htdocs/* mumories:/var/www/mumories.hackersanddesigners.nl/htdocs/

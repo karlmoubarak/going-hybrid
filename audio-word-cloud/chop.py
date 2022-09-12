@@ -1,5 +1,4 @@
 import os
-from tracemalloc import start
 import srt
 import pydub
 

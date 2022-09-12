@@ -29,6 +29,8 @@
 </script>
 
 <template>
+    <a href="/">🏡 Back to index</a><br />
+
     <screen-list
         v-if="screen === 'list'"></screen-list>
 

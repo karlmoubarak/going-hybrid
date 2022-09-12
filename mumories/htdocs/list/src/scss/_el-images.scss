@@ -1,0 +1,10 @@
+.el-images {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+
+    img {
+        width: 100%;
+    }
+}

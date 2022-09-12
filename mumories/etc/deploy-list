@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ../htdocs/list
+npm run build
+rsync -avz ./dist/* mumories:/var/www/mumories.hackersanddesigners.nl/htdocs/list/

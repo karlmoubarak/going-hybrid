@@ -1,17 +1,30 @@
-#
+ # encoding=utf8 
+
+# # # # # # # # # # # # # # # # # # # # # # # # 
+# REQUIREMENTS
+# # # # # # # # # # # # # # # # # # # # # # # # 
 import os
 import datetime
-from flask import Flask, flash, request, redirect
+from flask import *
 
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # 
+# GETTING STARTED
+# # # # # # # # # # # # # # # # # # # # # # # # 
 UPLOAD_FOLDER = 'files'
-
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder="static", template_folder="templates")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # 
+# PAGES
+# # # # # # # # # # # # # # # # # # # # # # # # 
+
+######################### HOMEPAGE
 @app.route('/')
 def root():
-    return app.send_static_file('index.html')
+    return render_template('index.html')
 
 
 @app.route('/save-record', methods=['POST'])
@@ -27,8 +40,6 @@ def save_record():
         return redirect(request.url)
     ct = datetime.datetime.now()
     file_name = str(ct)
-
-    # file_name = str(uuid.uuid4()) + ".mp3"
     full_file_name = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
     file.save(full_file_name)
     return '<h1>Success</h1>'

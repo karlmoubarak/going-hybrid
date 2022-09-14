@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUMoriezzzz</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
-</head>
-<body>
-    <p>
-        <button id="startRecording">Start recording</button>
-        <button id="stopRecording" disabled>Stop recording</button>
+{% extends 'layout.html' %}
+{% block content %}
+
+
+<p>Coucou!</p>
+<p>
+    <button id="startRecording">Start recording</button>
+    <button id="stopRecording" disabled>Stop recording</button>
     </p>
-</body>
-<script>
-    navigator
+
+
+
+<script type="text/javascript">
         .mediaDevices
         .getUserMedia({audio: true})
         .then(stream => { handlerFunction(stream) });
@@ -62,4 +58,7 @@
         rec.stop();
     };
 </script>
-</html>
+
+
+
+{% endblock content %}

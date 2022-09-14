@@ -21,7 +21,7 @@ export const useStore = defineStore('data', {
         screen() {
             console.log('projectIndex', this.projectIndex);
             return this.projectIndex > -1 ? 'project' : 'list';
-        }
+        },
     },
 
     actions : {

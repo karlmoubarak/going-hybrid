@@ -1,6 +1,7 @@
 <script setup>
     import { computed, onMounted, ref } from 'vue';
     import { useStore } from '@/store.js';
+import ElAudioSnippet from './el-audio-snippet.vue';
     const store = useStore();
     const project = computed(() => store.currentProject);
 
@@ -19,6 +20,11 @@
         <li><a v-bind:href="project.en_link_en">Exhibition website 🇬🇧</a></li>
         <li><a v-bind:href="project.en_link_nl">Exhibition website 🇳🇱</a></li>
     </ul>
+
+    <ElAudioSnippet
+        v-if="project.audio"
+        :project="project"
+    />
 
     <img class="image" v-bind:src="project.en_index_img" />
 

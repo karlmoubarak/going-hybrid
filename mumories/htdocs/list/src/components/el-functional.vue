@@ -12,6 +12,9 @@
             <a v-bind:href="'#' + project.index">
                 {{project.en_index_title}}
             </a>
+            <small
+                v-if="project.audio"
+            >🔈</small>
         </li>
     </ul>
 </template>
